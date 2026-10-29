@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ljubljana según Pedro</title>
+<meta name="description" content="Guía interactiva y bilingüe de Liubliana: lugares, deporte y comida, contados por un mexicano que vive aquí.">
+<meta name="theme-color" content="#0B7A4B">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Ljubljana">
+<meta property="og:title" content="Ljubljana según Pedro">
+<meta property="og:description" content="Guía interactiva de Liubliana: lugares, deporte y comida.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://vacopero.si/">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap">
+<style>
+html { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); -webkit-text-size-adjust: 100%; }
+body { margin: 0; }
+[hidden] { display: none !important; }
+img { max-width: 100%; }
+/* Layout: sticky schematic map beside a filterable list on desktop; map above list on phones. */
+:root {
+  --bg: #EEF3F0;
+  --surface: #FFFFFF;
+  --ink: #11231C;
+  --muted: #55695F;
+  --line: #D0DCD5;
+  --map: #E3ECE7;
+  --river: #8DBCD9;
+  --park: #C5DEC9;
+  --sight: #0B7A4B;
+  --sport: #D81B72;
+  --food: #B86A00;
+  --pin-ink: #FFFFFF;
+  --focus: #11231C;
+  --display: "Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --body: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0D1A15; --surface: #15281F; --ink: #E7F1EC; --muted: #9DB3A9; --line: #29443A;
+    --map: #112119; --river: #2F6483; --park: #1B3A29;
+    --sight: #3FD08B; --sport: #FF5FA2; --food: #F0A93B; --pin-ink: #0D1A15; --focus: #E7F1EC;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0D1A15; --surface: #15281F; --ink: #E7F1EC; --muted: #9DB3A9; --line: #29443A;
+  --map: #112119; --river: #2F6483; --park: #1B3A29;
+  --sight: #3FD08B; --sport: #FF5FA2; --food: #F0A93B; --pin-ink: #0D1A15; --focus: #E7F1EC;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5;
+  padding-block: 20px 40px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.page { max-width: 1120px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+header { display: flex; flex-wrap: wrap; gap: 16px 24px; justify-content: space-between; align-items: flex-end; }
+.title { min-width: 0; }
+.eyebrow { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 600; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.badge { border: 1px solid var(--line); border-radius: 999px; padding: 1px 9px; letter-spacing: .06em; }
+h1 { font-family: var(--display); font-weight: 800; font-size: clamp(32px, 6vw, 56px); line-height: 1; letter-spacing: -.02em; margin: 8px 0 8px; text-wrap: balance; }
+h1 em { font-style: normal; color: var(--sport); }
+.sub { color: var(--muted); max-width: 52ch; margin: 0; }
+
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface); }
+.seg button { border: 0; background: transparent; padding: 8px 14px; font-weight: 600; font-size: 13px; letter-spacing: .04em; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+
+.controls { display: flex; flex-direction: column; gap: 12px; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.label { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-right: 4px; }
+.chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 13px; font-size: 14px; display: inline-flex; gap: 6px; align-items: center; }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.chip .n { font-variant-numeric: tabular-nums; opacity: .7; font-size: 12px; }
+
+.main { display: grid; grid-template-columns: 1fr; gap: 20px; align-items: start; }
+@media (min-width: 900px) {
+  .main { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
+  .mapcol { position: sticky; top: 16px; }
+}
+.mapcol { min-width: 0; }
+.mapbox { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--map); }
+.mapbox svg { display: block; width: 100%; height: auto; }
+.maplegend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 10px 2px 0; font-size: 12.5px; color: var(--muted); }
+.maplegend span { display: inline-flex; align-items: center; gap: 6px; }
+.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.dot.sight { background: var(--sight); } .dot.sport { background: var(--sport); } .dot.food { background: var(--food); }
+
+.pin { cursor: pointer; }
+.pin circle.body { stroke: var(--surface); stroke-width: 2.5; }
+.pin.sight circle.body { fill: var(--sight); }
+.pin.sport circle.body { fill: var(--sport); }
+.pin.food circle.body { fill: var(--food); }
+.pin text { fill: var(--pin-ink); font: 700 11px var(--body); text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+.pin.dim { opacity: .22; }
+.pin.sel circle.ring { stroke: var(--ink); stroke-width: 2.5; fill: none; }
+.pin circle.ring { fill: none; stroke: none; }
+.pin:focus-visible circle.ring { stroke: var(--focus); stroke-width: 2.5; }
+.pin:focus { outline: none; }
+.maplabel rect { fill: var(--ink); }
+.maplabel text { fill: var(--bg); font: 600 12px var(--body); dominant-baseline: central; }
+.routeline { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-dasharray: 2 6; stroke-linecap: round; }
+.geo-text { fill: var(--muted); font: 600 11px var(--body); letter-spacing: .12em; text-transform: uppercase; }
+.scale line, .scale path { stroke: var(--muted); stroke-width: 2; fill: none; }
+.scale text { fill: var(--muted); font: 600 11px var(--body); }
+
+.listcol { min-width: 0; display: flex; flex-direction: column; gap: 12px; }
+.routebar { border: 1px solid var(--line); background: var(--surface); border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+.routebar h2 { font-family: var(--display); font-size: 20px; margin: 0; letter-spacing: -.01em; }
+.routebar p { margin: 0; color: var(--muted); font-size: 14px; }
+.routebar button.copy { align-self: flex-start; margin-top: 4px; border: 1px solid var(--line); background: transparent; border-radius: 8px; padding: 6px 12px; font-size: 13px; font-weight: 600; }
+
+.cards { display: flex; flex-direction: column; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 4px 12px; cursor: pointer; scroll-margin-block: 12px; }
+.card.sel { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
+.card .num { grid-row: 1 / span 3; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 13px; color: var(--pin-ink); font-variant-numeric: tabular-nums; }
+.card.noroute { grid-template-columns: minmax(0, 1fr) auto; }
+.num.sight { background: var(--sight); } .num.sport { background: var(--sport); } .num.food { background: var(--food); }
+.card .tag { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; }
+.tag.sight { color: var(--sight); } .tag.sport { color: var(--sport); } .tag.food { color: var(--food); }
+.card h3 { font-family: var(--display); font-size: 19px; line-height: 1.2; margin: 0; letter-spacing: -.01em; }
+.card p { margin: 2px 0 0; color: var(--muted); }
+.card .meta { font-size: 13px; color: var(--muted); margin-top: 6px; display: flex; flex-wrap: wrap; gap: 4px 12px; }
+.card .meta b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+.heart { grid-column: -2; grid-row: 1 / span 2; align-self: start; border: 1px solid var(--line); background: transparent; border-radius: 10px; width: 38px; height: 38px; display: grid; place-items: center; }
+.heart svg { width: 18px; height: 18px; fill: none; stroke: var(--ink); stroke-width: 2; }
+.heart[aria-pressed="true"] svg { fill: var(--sport); stroke: var(--sport); }
+.maplink { display: inline-block; margin-top: 8px; font-size: 13px; font-weight: 600; color: var(--ink); text-underline-offset: 3px; }
+.empty { border: 1px dashed var(--line); border-radius: 14px; padding: 24px; color: var(--muted); text-align: center; }
+
+footer { color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); padding-top: 14px; display: flex; flex-direction: column; gap: 4px; }
+footer b { color: var(--ink); }
+@media (prefers-reduced-motion: no-preference) {
+  .pin, .card { transition: opacity .15s, border-color .15s; }
+}
+</style>
+
+</head>
+<body>
+<div class="page">
+  <header>
+    <div class="title">
+      <div class="eyebrow"><span id="eyebrow"></span><span class="badge" id="badge"></span></div>
+      <h1 id="h1"></h1>
+      <p class="sub" id="sub"></p>
+    </div>
+    <div class="seg" role="group" aria-label="Language / Idioma">
+      <button id="lang-es" type="button" aria-pressed="true">ES</button>
+      <button id="lang-en" type="button" aria-pressed="false">EN</button>
+    </div>
+  </header>
+
+  <section class="controls">
+    <div class="row" id="chips" role="group"></div>
+    <div class="row" id="routes" role="group"></div>
+  </section>
+
+  <div class="main">
+    <div class="mapcol">
+      <div class="mapbox"><svg id="map" viewBox="0 0 700 500" role="group"></svg></div>
+      <div class="maplegend" id="legend"></div>
+    </div>
+    <div class="listcol">
+      <div id="routebar"></div>
+      <ul class="cards" id="cards"></ul>
+    </div>
+  </div>
+
+  <footer>
+    <span id="foot1"></span>
+    <span id="foot2"></span>
+  </footer>
+</div>
+
+<script>
+(function () {
+  // ---------- data (real Ljubljana places; tips are placeholders to replace with Pedro's own) ----------
+  var P = [
+    { id: "triple", cat: "sight", tags: ["free"], lat: 46.0514, lon: 14.5062,
+      name: { es: "Tromostovje (Triple Puente)", en: "Tromostovje (Triple Bridge)" },
+      tip: { es: "Tres puentes de Plečnik en el centro. Ve al amanecer: sin multitud y con la mejor luz.", en: "Plečnik's three bridges in the center. Go at sunrise: no crowds and the best light." },
+      price: { es: "Gratis", en: "Free" }, time: { es: "20 min", en: "20 min" } },
+    { id: "market", cat: "food", tags: ["rain"], lat: 46.0503, lon: 14.5083,
+      name: { es: "Mercado Central y Columnata", en: "Central Market and Colonnade" },
+      tip: { es: "Columnata de Plečnik junto al río. Ve por la mañana, cuando hay más puestos. Los domingos hay menos: confirma horarios.", en: "Plečnik's colonnade by the river. Go in the morning, when stalls are fullest. Sundays are quieter: check hours." },
+      price: { es: "Desde 3 €", en: "From €3" }, time: { es: "45 min", en: "45 min" } },
+    { id: "dragon", cat: "sight", tags: ["free"], lat: 46.0522, lon: 14.5120,
+      name: { es: "Puente del Dragón", en: "Dragon Bridge" },
+      tip: { es: "El dragón es el símbolo de la ciudad. Reto para tus Stories: cuenta cuántos dragones encuentras.", en: "The dragon is the city's symbol. Story challenge: count how many dragons you can find." },
+      price: { es: "Gratis", en: "Free" }, time: { es: "10 min", en: "10 min" } },
+    { id: "river", cat: "food", tags: ["free"], lat: 46.0517, lon: 14.5090,
+      name: { es: "Cankarjevo nabrežje (terrazas del río)", en: "Cankarjevo nabrežje (riverside terraces)" },
+      tip: { es: "Pide un café y quédate una hora. Aquí aprendes a no tener prisa.", en: "Order a coffee and stay an hour. This is where you learn not to rush." },
+      price: { es: "Café ~2,50 €", en: "Coffee ~€2.50" }, time: { es: "1 h", en: "1 h" } },
+    { id: "castle", cat: "sight", tags: [], lat: 46.0487, lon: 14.5087,
+      name: { es: "Castillo de Liubliana", en: "Ljubljana Castle" },
+      tip: { es: "Sube en funicular o a pie (unos 15 min). La vista del centro vale el esfuerzo.", en: "Take the funicular or walk up (about 15 min). The view over the center is worth it." },
+      price: { es: "De pago", en: "Paid" }, time: { es: "1,5 h", en: "1.5 h" } },
+    { id: "tivoli", cat: "sight", tags: ["free"], lat: 46.0535, lon: 14.4960,
+      name: { es: "Parque Tivoli", en: "Tivoli Park" },
+      tip: { es: "El pulmón verde de la ciudad. Ideal para caminar antes de un partido.", en: "The city's green lung. Great for a walk before a game." },
+      price: { es: "Gratis", en: "Free" }, time: { es: "1 h", en: "1 h" } },
+    { id: "metelkova", cat: "sight", tags: ["free"], lat: 46.0565, lon: 14.5160,
+      name: { es: "Metelkova", en: "Metelkova" },
+      tip: { es: "Antiguo cuartel convertido en centro de arte alternativo. Ve de día: es el contraste perfecto con el centro.", en: "A former barracks turned alternative art hub. Go by day: the perfect contrast to the old town." },
+      price: { es: "Gratis", en: "Free" }, time: { es: "45 min", en: "45 min" } },
+    { id: "trnovo", cat: "sight", tags: ["free"], lat: 46.0440, lon: 14.5025,
+      name: { es: "Trnovo", en: "Trnovo" },
+      tip: { es: "Barrio tranquilo junto al río, con una iglesia de Plečnik. Así se vive en Liubliana sin turistas.", en: "A quiet riverside neighborhood with a Plečnik church. Ljubljana without the tourists." },
+      price: { es: "Gratis", en: "Free" }, time: { es: "1 h", en: "1 h" } },
+    { id: "stadium", cat: "sport", tags: [], lat: 46.0650, lon: 14.5385,
+      name: { es: "Estadio Stožice (fútbol)", en: "Stožice Stadium (football)" },
+      tip: { es: "Casa del fútbol del Olimpija. Llega 45 min antes y vive la previa. Aquí se aplaude más de lo que se grita: tu energía mexicana se nota.", en: "Home of Olimpija football. Arrive 45 min early for the build-up. People clap more than they shout here: your Mexican energy stands out." },
+      price: { es: "Según partido", en: "Varies by match" }, time: { es: "2,5 h", en: "2.5 h" } },
+    { id: "arena", cat: "sport", tags: ["rain"], lat: 46.0668, lon: 14.5410,
+      name: { es: "Arena Stožice (baloncesto)", en: "Stožice Arena (basketball)" },
+      tip: { es: "Baloncesto bajo techo: el plan perfecto si llueve. Revisa el calendario antes de ir.", en: "Indoor basketball: the perfect rainy-day plan. Check the fixture list before you go." },
+      price: { es: "Según partido", en: "Varies by match" }, time: { es: "2,5 h", en: "2.5 h" } },
+    { id: "hala", cat: "sport", tags: ["rain"], lat: 46.0587, lon: 14.4977,
+      name: { es: "Hala Tivoli (hockey)", en: "Hala Tivoli (hockey)" },
+      tip: { es: "Hockey sobre hielo dentro del parque Tivoli. Lleva abrigo: dentro hace frío de verdad.", en: "Ice hockey inside Tivoli Park. Bring a coat: it gets properly cold inside." },
+      price: { es: "Según partido", en: "Varies by match" }, time: { es: "2,5 h", en: "2.5 h" } }
+  ];
+  var byId = {}; P.forEach(function (p) { byId[p.id] = p; });
+
+  var ROUTES = {
+    day: { stops: [["triple", "09:00"], ["market", "09:30"], ["dragon", "10:30"], ["river", "11:00"], ["castle", "13:00"], ["tivoli", "16:00"]],
+      name: { es: "Un día en Liubliana", en: "One day in Ljubljana" },
+      desc: { es: "Del puente al castillo y al parque, a pie. Unos 4 km en total.", en: "From the bridges to the castle and the park, on foot. About 4 km in total." } },
+    match: { stops: [["market", "10:00"], ["river", "12:00"], ["stadium", "17:30"]],
+      name: { es: "Día de partido", en: "Matchday" },
+      desc: { es: "Desayuno en el mercado, café en el río y rumbo a Stožice.", en: "Breakfast at the market, a coffee by the river, then off to Stožice." } }
+  };
+
+  var CATS = ["sport", "food", "sight"];
+  var FILTERS = ["all", "sport", "food", "sight", "free", "rain", "saved"];
+
+  var T = {
+    es: {
+      eyebrow: "Guía interactiva", badge: "Beta",
+      h1: "Ljubljana según <em>Pedro</em>", sub: "Los lugares, el deporte y la comida de la ciudad, contados por un mexicano que vive aquí.",
+      f: { all: "Todo", sport: "Deporte", food: "Comida", sight: "Vistas", free: "Gratis", rain: "Si llueve", saved: "Guardados" },
+      cat: { sport: "Deporte", food: "Comida", sight: "Vistas" },
+      routes: "Rutas", noroute: "Sin ruta", copy: "Copiar ruta", copied: "Copiada",
+      empty: "Nada guardado todavía. Toca el corazón en un lugar para guardarlo.", emptyF: "No hay lugares con este filtro.",
+      map: "Mapa esquemático de Ljubljana", river: "Ljubljanica", park: "Tivoli", hill: "Castillo", scale: "~1 km", price: "Precio", dur: "Tiempo",
+      maps: "Abrir en Google Maps", save: "Guardar", unsave: "Quitar de guardados", stops: "paradas",
+      foot1: "<b>Datos de ejemplo.</b> Los lugares son reales; los consejos son marcadores para reemplazar con tu propia experiencia y fotos.",
+      foot2: "El mapa es un esquema, no una referencia exacta. Confirma horarios y entradas antes de ir."
+    },
+    en: {
+      eyebrow: "Interactive guide", badge: "Beta",
+      h1: "Ljubljana according to <em>Pedro</em>", sub: "The places, sports and food of the city, told by a Mexican who lives here.",
+      f: { all: "All", sport: "Sports", food: "Food", sight: "Sights", free: "Free", rain: "Rainy day", saved: "Saved" },
+      cat: { sport: "Sports", food: "Food", sight: "Sights" },
+      routes: "Routes", noroute: "No route", copy: "Copy route", copied: "Copied",
+      empty: "Nothing saved yet. Tap the heart on a place to save it.", emptyF: "No places match this filter.",
+      map: "Schematic map of Ljubljana", river: "Ljubljanica", park: "Tivoli", hill: "Castle", scale: "~1 km", price: "Price", dur: "Time",
+      maps: "Open in Google Maps", save: "Save", unsave: "Remove from saved", stops: "stops",
+      foot1: "<b>Sample data.</b> The places are real; the tips are placeholders to replace with your own experience and photos.",
+      foot2: "The map is a sketch, not an exact reference. Check hours and tickets before you go."
+    }
+  };
+
+  // ---------- state ----------
+  var lang = "es";
+  try { var sl = localStorage.getItem("ljg-lang"); if (sl === "es" || sl === "en") lang = sl; else if (navigator.language && navigator.language.indexOf("es") !== 0) lang = "en"; } catch (e) {}
+  var filter = "all", route = "none", sel = null, saved = {};
+  try { var ss = JSON.parse(localStorage.getItem("ljg-saved") || "{}"); if (ss && typeof ss === "object") saved = ss; } catch (e) {}
+  var $ = function (id) { return document.getElementById(id); };
+  var t = function () { return T[lang]; };
+
+  // ---------- projection: about 6.7 m per px, lat/lon to 700x500 ----------
+  var X = function (lon) { return (lon - 14.485) * 11550; };
+  var Y = function (lat) { return (46.070 - lat) * 16650; };
+  function smooth(pts) {
+    var d = "M" + pts[0][0].toFixed(1) + " " + pts[0][1].toFixed(1);
+    for (var i = 1; i < pts.length - 1; i++) {
+      var mx = (pts[i][0] + pts[i + 1][0]) / 2, my = (pts[i][1] + pts[i + 1][1]) / 2;
+      d += " Q" + pts[i][0].toFixed(1) + " " + pts[i][1].toFixed(1) + " " + mx.toFixed(1) + " " + my.toFixed(1);
+    }
+    var l = pts[pts.length - 1];
+    return d + " L" + l[0].toFixed(1) + " " + l[1].toFixed(1);
+  }
+  var RIVER = [[14.4930, 46.0405], [14.4990, 46.0440], [14.5030, 46.0470], [14.5060, 46.0505], [14.5090, 46.0512], [14.5120, 46.0518], [14.5190, 46.0540], [14.5280, 46.0580], [14.5400, 46.0625], [14.5450, 46.0650]]
+    .map(function (q) { return [X(q[0]), Y(q[1])]; });
+
+  // ---------- helpers ----------
+  function visible(p) {
+    if (route !== "none") return ROUTES[route].stops.some(function (s) { return s[0] === p.id; });
+    if (filter === "all") return true;
+    if (filter === "saved") return !!saved[p.id];
+    if (filter === "free" || filter === "rain") return p.tags.indexOf(filter) >= 0;
+    return p.cat === filter;
+  }
+  function routeIndex(id) {
+    if (route === "none") return -1;
+    var s = ROUTES[route].stops;
+    for (var i = 0; i < s.length; i++) if (s[i][0] === id) return i;
+    return -1;
+  }
+  function count(f) {
+    return P.filter(function (p) {
+      if (f === "all") return true;
+      if (f === "saved") return !!saved[p.id];
+      if (f === "free" || f === "rain") return p.tags.indexOf(f) >= 0;
+      return p.cat === f;
+    }).length;
+  }
+
+  // ---------- render ----------
+  function renderStatic() {
+    var s = t();
+    document.documentElement.lang = lang;
+    $("eyebrow").textContent = s.eyebrow; $("badge").textContent = s.badge;
+    $("h1").innerHTML = s.h1; $("sub").textContent = s.sub;
+    $("foot1").innerHTML = s.foot1; $("foot2").textContent = s.foot2;
+    $("lang-es").setAttribute("aria-pressed", lang === "es"); $("lang-en").setAttribute("aria-pressed", lang === "en");
+    $("legend").innerHTML = CATS.map(function (c) { return '<span><i class="dot ' + c + '"></i>' + s.cat[c] + "</span>"; }).join("");
+  }
+
+  function renderControls() {
+    var s = t();
+    $("chips").innerHTML = FILTERS.map(function (f) {
+      var on = route === "none" && filter === f;
+      return '<button type="button" class="chip" data-f="' + f + '" aria-pressed="' + on + '">' + s.f[f] + ' <span class="n">' + count(f) + "</span></button>";
+    }).join("");
+    $("routes").innerHTML = '<span class="label">' + s.routes + "</span>" +
+      '<button type="button" class="chip" data-r="none" aria-pressed="' + (route === "none") + '">' + s.noroute + "</button>" +
+      Object.keys(ROUTES).map(function (k) {
+        return '<button type="button" class="chip" data-r="' + k + '" aria-pressed="' + (route === k) + '">' + ROUTES[k].name[lang] + "</button>";
+      }).join("");
+  }
+
+  function renderMap() {
+    var s = t(), h = "";
+    h += '<rect width="700" height="500" fill="var(--map)"/>';
+    h += '<ellipse cx="' + X(14.4975).toFixed(0) + '" cy="' + ((46.070 - 46.0555) * 16650).toFixed(0) + '" rx="46" ry="92" fill="var(--park)"/>';
+    h += '<ellipse cx="' + X(14.5085).toFixed(0) + '" cy="' + Y(46.0489).toFixed(0) + '" rx="46" ry="36" fill="var(--park)"/>';
+    h += '<path d="' + smooth(RIVER) + '" fill="none" stroke="var(--river)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>';
+    h += '<text class="geo-text" x="' + (X(14.5190) + 6).toFixed(0) + '" y="' + (Y(46.0540) - 14).toFixed(0) + '">' + s.river + "</text>";
+    h += '<text class="geo-text" x="' + (X(14.4975) - 24).toFixed(0) + '" y="' + (Y(46.0600) - 4).toFixed(0) + '">' + s.park + "</text>";
+    h += '<text class="geo-text" x="' + (X(14.5085) - 22).toFixed(0) + '" y="' + (Y(46.0489) + 52).toFixed(0) + '">' + s.hill + "</text>";
+    if (route !== "none") {
+      var pts = ROUTES[route].stops.map(function (st) { var p = byId[st[0]]; return X(p.lon).toFixed(1) + "," + Y(p.lat).toFixed(1); });
+      h += '<polyline class="routeline" points="' + pts.join(" ") + '"/>';
+    }
+    P.forEach(function (p) {
+      var x = X(p.lon), y = Y(p.lat), ri = routeIndex(p.id);
+      var cls = "pin " + p.cat + (visible(p) ? "" : " dim") + (sel === p.id ? " sel" : "");
+      h += '<g class="' + cls + '" data-id="' + p.id + '" tabindex="0" role="button" aria-label="' + p.name[lang] + '" transform="translate(' + x.toFixed(1) + " " + y.toFixed(1) + ')">' +
+        '<circle class="ring" r="15"/><circle class="body" r="11"/>' + (ri >= 0 ? "<text>" + (ri + 1) + "</text>" : "") + "</g>";
+    });
+    if (sel) {
+      var p = byId[sel], x = X(p.lon), y = Y(p.lat), name = p.name[lang], w = name.length * 6.6 + 18;
+      var lx = x + 18; if (lx + w > 692) lx = x - 18 - w;
+      var ly = Math.max(14, Math.min(486, y));
+      h += '<g class="maplabel" pointer-events="none"><rect x="' + lx.toFixed(1) + '" y="' + (ly - 12).toFixed(1) + '" width="' + w.toFixed(1) + '" height="24" rx="6"/><text x="' + (lx + 9).toFixed(1) + '" y="' + ly.toFixed(1) + '">' + name + "</text></g>";
+    }
+    h += '<g class="scale" transform="translate(20 474)"><path d="M0 -6 V0 H150 V-6"/><text x="0" y="-12">' + s.scale + "</text></g>";
+    $("map").setAttribute("aria-label", s.map);
+    $("map").innerHTML = h;
+  }
+
+  function renderList() {
+    var s = t(), list;
+    if (route !== "none") {
+      var r = ROUTES[route];
+      list = r.stops.map(function (st) { return byId[st[0]]; });
+      $("routebar").innerHTML = '<div class="routebar"><h2>' + r.name[lang] + "</h2><p>" + r.desc[lang] + " · " + r.stops.length + " " + s.stops + '</p><button type="button" class="copy" id="copy">' + s.copy + "</button></div>";
+    } else {
+      list = P.filter(visible);
+      $("routebar").innerHTML = "";
+    }
+    if (!list.length) {
+      $("cards").innerHTML = '<li class="empty">' + (filter === "saved" ? s.empty : s.emptyF) + "</li>";
+      return;
+    }
+    $("cards").innerHTML = list.map(function (p, i) {
+      var ri = routeIndex(p.id), time = ri >= 0 ? ROUTES[route].stops[ri][1] : null;
+      var on = !!saved[p.id];
+      return '<li class="card' + (ri < 0 ? " noroute" : "") + (sel === p.id ? " sel" : "") + '" id="card-' + p.id + '" data-id="' + p.id + '">' +
+        (ri >= 0 ? '<div class="num ' + p.cat + '">' + (ri + 1) + "</div>" : "") +
+        '<div style="min-width:0"><div class="tag ' + p.cat + '">' + s.cat[p.cat] + (time ? " · " + time : "") + "</div>" +
+        "<h3>" + p.name[lang] + "</h3><p>" + p.tip[lang] + "</p>" +
+        '<div class="meta"><span>' + s.price + ": <b>" + p.price[lang] + "</b></span><span>" + s.dur + ": <b>" + p.time[lang] + "</b></span></div>" +
+        '<a class="maplink" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=' + p.lat + "," + p.lon + '">' + s.maps + " ↗</a></div>" +
+        '<button type="button" class="heart" data-save="' + p.id + '" aria-pressed="' + on + '" aria-label="' + (on ? s.unsave : s.save) + '">' +
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z"/></svg></button></li>';
+    }).join("");
+  }
+
+  function renderAll() { renderStatic(); renderControls(); renderMap(); renderList(); }
+
+  function select(id, scroll) {
+    sel = sel === id && !scroll ? null : id;
+    renderMap(); renderList();
+    if (scroll) {
+      var el = $("card-" + id);
+      if (el) el.scrollIntoView({ block: "nearest", behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    }
+  }
+
+  // ---------- events ----------
+  $("lang-es").addEventListener("click", function () { lang = "es"; try { localStorage.setItem("ljg-lang", lang); } catch (e) {} renderAll(); });
+  $("lang-en").addEventListener("click", function () { lang = "en"; try { localStorage.setItem("ljg-lang", lang); } catch (e) {} renderAll(); });
+
+  $("chips").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-f]"); if (!b) return;
+    filter = b.getAttribute("data-f"); route = "none"; sel = null; renderControls(); renderMap(); renderList();
+  });
+  $("routes").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-r]"); if (!b) return;
+    route = b.getAttribute("data-r"); sel = null; renderControls(); renderMap(); renderList();
+  });
+  $("map").addEventListener("click", function (e) {
+    var g = e.target.closest(".pin"); if (g) select(g.getAttribute("data-id"), true);
+  });
+  $("map").addEventListener("keydown", function (e) {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    var g = e.target.closest(".pin"); if (g) { e.preventDefault(); select(g.getAttribute("data-id"), true); }
+  });
+  $("cards").addEventListener("click", function (e) {
+    var h = e.target.closest("[data-save]");
+    if (h) {
+      var id = h.getAttribute("data-save");
+      if (saved[id]) delete saved[id]; else saved[id] = 1;
+      try { localStorage.setItem("ljg-saved", JSON.stringify(saved)); } catch (err) {}
+      renderControls(); renderList(); return;
+    }
+    var c = e.target.closest(".card"); if (c) select(c.getAttribute("data-id"), false);
+  });
+  $("routebar").addEventListener("click", function (e) {
+    var b = e.target.closest("#copy"); if (!b) return;
+    var r = ROUTES[route];
+    var text = r.name[lang] + "\n" + r.stops.map(function (st, i) { return (i + 1) + ". " + st[1] + " " + byId[st[0]].name[lang]; }).join("\n");
+    var done = function () { b.textContent = t().copied; setTimeout(function () { b.textContent = t().copy; }, 1500); };
+    try { navigator.clipboard.writeText(text).then(done, function () {}); } catch (err) {}
+  });
+
+  renderAll();
+})();
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () { navigator.serviceWorker.register("/sw.js").catch(function () {}); });
+}
+</script>
+</body>
+</html>
